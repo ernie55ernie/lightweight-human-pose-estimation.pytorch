@@ -1,3 +1,4 @@
+import time
 import argparse
 
 import cv2
@@ -88,7 +89,8 @@ def run_demo(net, image_provider, height_size, cpu, track, smooth):
     num_keypoints = Pose.num_kpts
     previous_poses = []
     delay = 1
-    for img in image_provider:
+    start_time = time.time()
+    for idx, img in enumerate(image_provider):
         orig_img = img.copy()
         heatmaps, pafs, scale, pad = infer_fast(net, img, height_size, stride, upsample_ratio, cpu)
 
@@ -134,6 +136,7 @@ def run_demo(net, image_provider, height_size, cpu, track, smooth):
                 delay = 0
             else:
                 delay = 1
+        print('Current FPS', (idx + 1) / (time.time() - start_time))
 
 
 if __name__ == '__main__':
